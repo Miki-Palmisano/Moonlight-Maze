@@ -54,7 +54,7 @@ def format_time(seconds):
 # SETTINGS LABIRINTO
 ####################
 
-MAZE_SIZE = 57
+MAZE_SIZE = 67
 exit_pos = [int(MAZE_SIZE / 2), int(MAZE_SIZE / 2)]
 positions = {"player1": [1, 1], "player2": [MAZE_SIZE - 2, MAZE_SIZE - 2]}
 
@@ -63,22 +63,18 @@ positions = {"player1": [1, 1], "player2": [MAZE_SIZE - 2, MAZE_SIZE - 2]}
 # GENERAZIONE LABIRINTO
 #######################
 
-def genera_labirinto_simmetrico(size, difficult=0.5):
+def genera_labirinto_simmetrico(size):
     """
     Genera labirinto simmetrico 4-quadranti
     Player 1 (1,1) e Player 2 (N-2,N-2) avranno SEMPRE stessa distanza dall'uscita
     """
     assert size % 2 == 1, "Size deve essere dispari per simmetria"
 
-    # Dimensione quadrante (es. size=31 -> quadrante=15)
-    quad_size = size // 2 + 1  # 16 per size=31
+    # Dimensione quadrante
+    quad_size = size // 2 + 1
 
-    # 1. Genera solo il QUADRANTE SUPERIORE SINISTRO
+    # Genera solo il QUADRANTE SUPERIORE SINISTRO
     quad = [[1 for _ in range(quad_size)] for _ in range(quad_size)]
-
-    # Parametro di difficoltà
-    dead_end_prob = difficult
-    dead_end_temperature = 1
 
     # DFS solo nel quadrante
     stack = [(1, 1)]
@@ -95,13 +91,8 @@ def genera_labirinto_simmetrico(size, difficult=0.5):
             nx, ny = x + dx, y + dy
             if 0 < nx < quad_size - 1 and 0 < ny < quad_size - 1:
                 if quad[ny][nx] == 1:
+
                     found = True
-
-                    # Aggiungo un dead end prima che tolga il muro, per evitare loop
-                    if random.random() < (dead_end_prob * dead_end_temperature):
-                        dead_end_temperature -= 0.1 * random.random()
-                        break
-
                     quad[ny][nx] = 0
                     quad[y + dy // 2][x + dx // 2] = 0
                     stack.append((nx, ny))
@@ -120,10 +111,10 @@ def genera_labirinto_simmetrico(size, difficult=0.5):
             grid[size - 1 - qy][qx] = quad[qy][qx]
             grid[size - 1 - qy][size - 1 - qx] = quad[qy][qx]
 
-    # 3. Assicura celle chiave percorribili
+    # Assicura celle chiave percorribili
     center = size // 2
 
-    # 4. Collega i quadranti al centro (se necessario)
+    # Collega i quadranti al centro (se necessario)
     for i in range(center - 2, center + 3):
         for j in range(center - 2, center + 3):
             if 0 <= i < size and 0 <= j < size:

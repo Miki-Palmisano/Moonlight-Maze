@@ -8,7 +8,7 @@ import time
 
 class MidnightMaze(arcade.Window):
     def __init__(self):
-        super().__init__(width=1024, height=768, title="🔴 Moonlight Maze - Player 1", fullscreen=False)
+        super().__init__(width=1024, height=768, title="🔴 Moonlight Maze - Player 1", fullscreen=False, resizable=True)
 
         # TEXTURE LABIRINTO
         self.wall_texture = arcade.load_texture("./assets/wall.png")
