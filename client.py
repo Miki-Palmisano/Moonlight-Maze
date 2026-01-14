@@ -8,7 +8,7 @@ import time
 
 class MidnightMaze(arcade.Window):
     def __init__(self):
-        super().__init__(width=1024, height=768, title="🔴 Moonlight Maze - Player 1", fullscreen=False, resizable=True)
+        super().__init__(width=1024, height=768, title="Moonlight Maze - Player 1", fullscreen=False, resizable=True)
 
         # TEXTURE LABIRINTO
         self.wall_texture = arcade.load_texture("./assets/wall.png")
@@ -211,6 +211,42 @@ class MidnightMaze(arcade.Window):
                 json.dumps({"name": self.player_name}))
 
     # ---------- DRAW ----------
+    def draw_winner_banner(self, text: str):
+        # Posizione: sopra il labirinto (parte alta della finestra)
+        cx = self.width // 2
+        cy = self.height - 70
+
+        font_size = 44
+        font_name = ("Courier New", "Consolas", "monospace")
+
+        # Pannello semi-trasparente dietro
+        panel_w = 700
+        panel_h = 80
+        arcade.draw_lrbt_rectangle_filled(
+            cx - panel_w // 2, cx + panel_w // 2,
+            cy - panel_h // 2, cy + panel_h // 2,  # top=cy+40=738, bottom=cy-40=658 → OK!
+            (10, 10, 20, 170)
+        )
+
+        # Contorno (8 direzioni)
+        outline = arcade.color.BLACK
+        for ox, oy in [(-2, 0), (2, 0), (0, -2), (0, 2), (-2, -2), (-2, 2), (2, -2), (2, 2)]:
+            arcade.draw_text(
+                text, cx + ox, cy + oy, outline, font_size,
+                anchor_x="center", anchor_y="center", font_name=font_name
+            )
+
+        # Ombra leggera (offset)
+        arcade.draw_text(
+            text, cx + 3, cy - 3, (0, 0, 0, 120), font_size,
+            anchor_x="center", anchor_y="center", font_name=font_name
+        )
+
+        # Testo principale
+        arcade.draw_text(
+            text, cx, cy, arcade.color.WHITE, font_size,
+            anchor_x="center", anchor_y="center", font_name=font_name
+        )
 
     def build_maze(self):
         """Costruisci il labirinto come sprite (una volta sola)"""
@@ -254,15 +290,6 @@ class MidnightMaze(arcade.Window):
                 24, anchor_x="center").draw()
             return
 
-        # SCHERMATA GAME OVER
-        if self.state == "game_over":
-            self.manager.disable()
-            if self.winner:
-                arcade.Text(
-                    f"🏆 {self.winner.upper()} HA VINTO!",
-                    self.width // 2, self.height - 50, arcade.color.BLACK,
-                    32, anchor_x="center").draw()
-
         # GIOCO ATTIVO
         if (self.pos_player1 is None or self.pos_player2 is None
                 or self.griglia is None):
@@ -293,15 +320,17 @@ class MidnightMaze(arcade.Window):
 
         # INFORMED AI
         self.draw_circle(
-            player=self.pos_informed_ai, color=arcade.color.GREEN,
+            player=self.pos_informed_ai, color=arcade.color.BLACK,
             size=self.cell_size // 2, offset_x=offset_x, offset_y=offset_y)
 
-        arcade.Text(
-            "Moonlight Maze",20,
-            self.height - 40, arcade.color.WHITE,
-            24, anchor_x="left",
-            font_name="Arial").draw()
         self.manager.disable()
+
+        # SCHERMATA GAME OVER
+        if self.state == "game_over":
+            self.manager.disable()
+            if self.winner:
+                label = "🏆 " + self.winner.upper() + " HA VINTO!"
+                self.draw_winner_banner(label)
 
     # ---------- INPUT & LOGICA ----------
 

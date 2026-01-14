@@ -114,9 +114,8 @@ class GraphSearch:
         self.strategy = None
         self.fringe = []
         self.closed = []
-        self.last_node = None
 
-        self.new_config = None  # Flag per nuova configurazione
+        self.new_config = None
         self.running = False
 
         # MQTT Client
@@ -126,10 +125,14 @@ class GraphSearch:
         self.client.connect("localhost", 1883, 60)
         threading.Thread(target=self.client.loop_forever, daemon=True).start()
 
+
     def run_forever(self):
         """Loop principale che rimane attivo"""
         while True:
             if self.new_config and not self.running:
+                self.fringe = []
+                self.closed = []
+
                 maze, goal_state = self.new_config
                 self.problem = MazeProblem([1, 65], goal_state, maze)
                 self.strategy = GreedySearch(self.problem)

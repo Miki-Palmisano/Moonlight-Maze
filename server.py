@@ -261,7 +261,7 @@ class ServerDashboard(arcade.Window):
                     self.pending_winner = (player_id, winner_name, elapsed_time)
                     self.needs_update = True
 
-                    client.publish("maze/winner", json.dumps({"winner": player_id}))
+                    client.publish("maze/winner", json.dumps({"winner": winner_name}))
                     print(f"🏆 {player_id.upper()} HA VINTO!")
 
         except Exception as e:
