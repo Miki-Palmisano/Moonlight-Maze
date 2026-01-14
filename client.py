@@ -59,6 +59,7 @@ class MidnightMaze(arcade.Window):
         self.griglia = None
         self.pos_player1 = None
         self.pos_player2 = None
+        self.pos_informed_ai = [1,65]
         self.exit_pos = None
         self.maze_size = None
         self.cell_size = None
@@ -73,6 +74,7 @@ class MidnightMaze(arcade.Window):
         self.client.subscribe("maze/config")
         self.client.subscribe("maze/player2/pos")
         self.client.subscribe("maze/winner")
+        self.client.subscribe("maze/InformedAI")
 
     def on_mqtt_message(self, client, userdata, msg):
         try:
@@ -100,6 +102,9 @@ class MidnightMaze(arcade.Window):
 
             elif "player2/pos" in msg.topic:
                 self.pos_player2 = data
+
+            elif "InformedAI" in msg.topic:
+                self.pos_informed_ai = data
 
             elif "winner" in msg.topic:
                 self.winner = data["winner"]
@@ -259,8 +264,8 @@ class MidnightMaze(arcade.Window):
                     32, anchor_x="center").draw()
 
         # GIOCO ATTIVO
-        if (self.pos_player1 is None or self.pos_player2 is None or
-                self.griglia is None):
+        if (self.pos_player1 is None or self.pos_player2 is None
+                or self.griglia is None):
             arcade.Text("Caricamento dati giocatore...",
                         self.width // 2, self.height // 2,
                         arcade.color.WHITE,24, anchor_x="center").draw()
@@ -284,6 +289,11 @@ class MidnightMaze(arcade.Window):
         # PLAYER 2
         self.draw_circle(
             player=self.pos_player2, color=arcade.color.GREEN,
+            size=self.cell_size // 2, offset_x=offset_x, offset_y=offset_y)
+
+        # INFORMED AI
+        self.draw_circle(
+            player=self.pos_informed_ai, color=arcade.color.GREEN,
             size=self.cell_size // 2, offset_x=offset_x, offset_y=offset_y)
 
         arcade.Text(
