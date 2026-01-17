@@ -129,7 +129,7 @@ def genera_labirinto_simmetrico(size):
 
 class ServerDashboard(arcade.Window):
     def __init__(self):
-        super().__init__(1300, 500, "🎮 Maze Server Dashboard")
+        super().__init__(1300, 500, "🎮 Maze Server Dashboard", resizable=True)
         arcade.set_background_color(arcade.color.MIDNIGHT_BLUE)
 
         # Texture labirinto

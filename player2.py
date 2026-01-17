@@ -285,8 +285,12 @@ class MidnightMaze(arcade.Window):
         if self.state == "waiting" or not self.game_ready:
             self.manager.draw()
             arcade.Text(
-                "In attesa del server...", self.width // 2,
+                "In attesa del server... Puoi muoverti con WASD", self.width // 2,
                 self.height // 2 - 140, arcade.color.WHITE,
+                24, anchor_x="center").draw()
+            arcade.Text(
+                "🟢 TU SEI IL PLAYER VERDE IN ALTO A DESTRA 🟢", self.width // 2,
+                    self.height // 2 - 180, arcade.color.WHITE,
                 24, anchor_x="center").draw()
             return
 
@@ -311,17 +315,17 @@ class MidnightMaze(arcade.Window):
         # PLAYER 1
         self.draw_circle(
             player=self.pos_player1, color=arcade.color.CRIMSON,
-            size=self.cell_size // 2, offset_x=offset_x, offset_y=offset_y)
+            size=self.cell_size , offset_x=offset_x, offset_y=offset_y)
 
         # PLAYER 2
         self.draw_circle(
             player=self.pos_player2, color=arcade.color.GREEN,
-            size=self.cell_size // 2, offset_x=offset_x, offset_y=offset_y)
+            size=self.cell_size , offset_x=offset_x, offset_y=offset_y)
 
         # INFORMED AI
         self.draw_circle(
             player=self.pos_informed_ai, color=arcade.color.BLACK,
-            size=self.cell_size // 2, offset_x=offset_x, offset_y=offset_y)
+            size=self.cell_size , offset_x=offset_x, offset_y=offset_y)
 
         self.manager.disable()
 

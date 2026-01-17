@@ -138,8 +138,11 @@ class GraphSearch:
                 self.new_config = None  # Reset flag
 
                 print("🚀 Avvio ricerca...")
+                start = time.time()
                 status, path = self.run()  # Ora run() può essere bloccante
+                elapsed = time.time() - start
                 print(f"✅ Completato: {status}, path: {path}")
+                print(f"Ha impiegato {elapsed:.2f} secondi")
 
             time.sleep(0.1)  # Piccola pausa per non consumare CPU
 
